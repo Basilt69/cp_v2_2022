@@ -49,8 +49,8 @@ cmake_ninja_workdir = /home/basiltkachenko/CLionProjects/cp_v2_2022/cmake-build-
 
 build cmake_object_order_depends_target_untitled: phony || CMakeFiles/untitled.dir
 
-build CMakeFiles/untitled.dir/main.c.o: C_COMPILER__untitled_Debug /home/basiltkachenko/CLionProjects/cp_v2_2022/main.c || cmake_object_order_depends_target_untitled
-  DEP_FILE = CMakeFiles/untitled.dir/main.c.o.d
+build CMakeFiles/untitled.dir/client.c.o: C_COMPILER__untitled_Debug /home/basiltkachenko/CLionProjects/cp_v2_2022/client.c || cmake_object_order_depends_target_untitled
+  DEP_FILE = CMakeFiles/untitled.dir/client.c.o.d
   FLAGS = -g -std=gnu99
   OBJECT_DIR = CMakeFiles/untitled.dir
   OBJECT_FILE_DIR = CMakeFiles/untitled.dir
@@ -69,7 +69,7 @@ build CMakeFiles/untitled.dir/server.c.o: C_COMPILER__untitled_Debug /home/basil
 #############################################
 # Link the executable untitled
 
-build untitled: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/main.c.o CMakeFiles/untitled.dir/server.c.o
+build untitled: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/client.c.o CMakeFiles/untitled.dir/server.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/untitled.dir
   POST_BUILD = :
