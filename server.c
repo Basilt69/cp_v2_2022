@@ -74,6 +74,66 @@ int main() {
             cleanup();
             return -1;
         }
-        for (int i = 0;)
+        for (int i = 0; i < num_ready; i++) {
+            if ((events[i].events & EPOLLERR) ||
+                (events[i].events & EPOLLERR) ||
+                (!(events[i].events & EPOLLIN))) {
+                perror("epoll error\n");
+                close(events[i].data.fd);
+            }
+            else if (events[i].data.fd == sFd) {
+                client_len = sizeof(client);
+                int conn_socket = accept(sFd, (struct sockaddr *) &client, &client_len);
+                if (conn_socket == -1) {
+                    if ((errno == EAGAIN) ||
+                        (errno == EWOULDBLOCK)) {
+                        break;
+                    }
+                    else {
+                        perror ("accept error");
+                        cleanup();
+                        break;
+                    }
+                }
+                event.data.fd = conn_socket;
+                event.events = EPOLLIN;
+                printf("Установлено соединение с сокетом %d\n", conn_socket);
+                if (epoll_ctl(epfd, EPOLL_CTL_ADD, conn_socket, &event) == -1) {
+                    perror("epoll_ctl error\n");
+                    cleanup();
+                    return -1;
+                }
+            }
+            else {
+                int bytes = recv(events[i].data.fd, msgfrom, BUF_SIZE, 0);
+                if (bytes == -1) {
+                    perror("recvfrom error\n");
+                    cleanup();
+                    return -1;
+                }
+                else if (bytes == 0) {
+                    if (epoll_ctl(epfd, EPOLL_CTL_DEL, events[i].data.fd, &event) == -1) {
+                        perror("epoll_ctl error\n");
+                        cleanup();
+                        return -1;
+                    }
+                    printf("Закрытие соединения с сокетом %d\n", events[i].data.fd);
+                    close(events[i].data.fd);
+                }
+                else {
+                    msgfrom[bytes] == '\0';
+                    printf("\nПолучено сообщение: %s\n", msgfrom);
+                    snprintf(msgto, BUF_SIZE, "Привет, %s, удачи!", msgfrom);
+                    if (send(events[i].data.fd, msgto, BUF_SIZE, 0) == -1) {
+                        perror("sendto error\n");
+                        cleanup();
+                        return -1;
+                    }
+                    else {
+                        printf("Отправлено сообщение: %s\n", msgto);
+                    }
+                }
+            }
+        }
     }
 }
