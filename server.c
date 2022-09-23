@@ -47,4 +47,33 @@ int main() {
         cleanup();
         return -1;
     }
+
+    char msgto[BUF_SIZE];
+    char msgfrom[BUF_SIZE];
+
+    if (signal(SIGINT, sighandler) == SIG_ERR) {
+        perror("Signal error\n");
+        cleanup();
+        return -1;
+    }
+
+    struct sockaddr_un client;
+    int client_len = sizeof(client);
+
+    if (listen(sFd, 5) == -1) {
+        perror("Listen error\n");
+        cleanup();
+        return -1;
+    }
+
+    printf("Сервер ждёт сообщения\n(Нажмите Ctrl+C для завершения работы\n)");
+    for (;;) {
+        int num_ready = epoll_wait(epfd, events, MAX_EPOLL_EVENTS, 100/*timeout*/);
+        if (num_ready == -1) {
+            perror("Epoll_wait error\n");
+            cleanup();
+            return -1;
+        }
+        for (int i = 0;)
+    }
 }
