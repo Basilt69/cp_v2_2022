@@ -72,6 +72,25 @@ void *thread_body(void *arg)
 
 int main(int argc, char **argv)
 {
+    memset((void *)num, 0, sizeof(num));
+    memset((void *)selecting, 0, sizeof(selecting));
+    res=0;
 
+    //Declaring the thread variables
+    pthread_t threads[THREAD_COUNT];
+
+    for(int i=0;i<THREAD_COUNT;++i)
+    {
+        //Creating a new thread with the function
+        //"thread_body" as its thread routine
+        pthread_create(&threads[i], NULL, &thread_body, (void *)((long)i));
+    }
+    for (int i=0;i<THREAD_COUNT;++i)
+    {
+        //Reaping the resources used by
+        //all threads nonce their task is completed
+        pthread_join(threads[i], NULL);
+    }
+    return 0;
 }
 
