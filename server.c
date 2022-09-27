@@ -66,9 +66,9 @@ int main() {
         return -1;
     }
 
-    printf("Сервер ждёт сообщения\n(Нажмите Ctrl+C для завершения работы\n)");
+    printf("Сервер ждет сообщения\n(Нажмите Ctrl+C для звершения работы)\n");
     for (;;) {
-        int num_ready = epoll_wait(epfd, events, MAX_EPOLL_EVENTS, 100/*timeout*/);
+        int num_ready = epoll_wait(epfd, events, MAX_EPOLL_EVENTS, 1000/*timeout*/);
         if (num_ready == -1) {
             perror("Epoll_wait error\n");
             cleanup();
@@ -76,7 +76,7 @@ int main() {
         }
         for (int i = 0; i < num_ready; i++) {
             if ((events[i].events & EPOLLERR) ||
-                (events[i].events & EPOLLERR) ||
+                (events[i].events & EPOLLHUP) ||
                 (!(events[i].events & EPOLLIN))) {
                 perror("epoll error\n");
                 close(events[i].data.fd);
@@ -110,8 +110,7 @@ int main() {
                     perror("recvfrom error\n");
                     cleanup();
                     return -1;
-                }
-                else if (bytes == 0) {
+                } else if (bytes == 0) {
                     if (epoll_ctl(epfd, EPOLL_CTL_DEL, events[i].data.fd, &event) == -1) {
                         perror("epoll_ctl error\n");
                         cleanup();
@@ -119,17 +118,15 @@ int main() {
                     }
                     printf("Закрытие соединения с сокетом %d\n", events[i].data.fd);
                     close(events[i].data.fd);
-                }
-                else {
-                    msgfrom[bytes] == '\0';
+                } else {
+                    msgfrom[bytes] = '\0';
                     printf("\nПолучено сообщение: %s\n", msgfrom);
-                    snprintf(msgto, BUF_SIZE, "Привет, %s, удачи!", msgfrom);
+                    snprintf(msgto, BUF_SIZE, "Привет,%s,будь здоров!", msgfrom);
                     if (send(events[i].data.fd, msgto, BUF_SIZE, 0) == -1) {
                         perror("sendto error\n");
                         cleanup();
                         return -1;
-                    }
-                    else {
+                    } else {
                         printf("Отправлено сообщение: %s\n", msgto);
                     }
                 }

@@ -17,7 +17,7 @@ void cleanup() {
     close(sFd);
 }
 
-void sighandler (int sig) {
+void sighandler(int sig) {
     cleanup();
     printf("\nЗавершение работы...\n");
     exit(0);
@@ -33,14 +33,14 @@ int main() {
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
     if (inet_pton(AF_INET, SERVER, &serv_addr.sin_addr.s_addr) == 0) {
-        perror("inet_pron error\n");
+        perror("inet_pton error\n");
         cleanup();
         return -1;
     }
 
     if (connect(sFd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) == -1 &&
-            errno != EINPROGRESS) {
-        perror("connect error \n");
+        errno != EINPROGRESS) {
+        perror("connect error\n");
         cleanup();
         return -1;
     }
@@ -53,7 +53,7 @@ int main() {
     epoll_ctl(epfd, EPOLL_CTL_ADD, sFd, &event);
 
     if (signal(SIGINT, sighandler) == SIG_ERR) {
-        perror("signal error\n");
+        perror("Signal error\n");
         cleanup();
         return -1;
     }
@@ -70,28 +70,27 @@ int main() {
             cleanup();
             return -1;
         }
-        for (int i =0; i < num_ready; i++) {
+        for (int i = 0; i < num_ready; i++) {
             if (events[i].events & EPOLLOUT) {
-                if (send(events[i].data.fd, msgto, sizeof(msgto), 0) == -1)
-                    perror("send error\n");
+                if (send(events[i].data.fd, msgto, sizeof(msgto), 0) == -1) {
+                    perror("Send error\n");
                     cleanup();
                     return -1;
-            }
-            else {
-                printf("Message sent: %s\n", msgto);
-            }
-            int bytes;
+                } else {
+                    printf("Отправлено сообщение: %s\n", msgto);
+                }
+                int bytes;
 
-            if ((bytes = recv(events[i].data.fd, msgfrom, BUF_SIZE, 0)) == -1) {
-                perror("recv error");
-                cleanup();
-                return -1;
-            }
-            else {
-                msgfrom[bytes] = '\0';
-                printf("Message received: %s\n", msgfrom);
+                if ((bytes = recv(events[i].data.fd, msgfrom, BUF_SIZE, 0)) == -1) {
+                    perror("recv error");
+                    cleanup();
+                    return -1;
+                } else {
+                    msgfrom[bytes] = '\0';
+                    printf("Получено сообщение: %s\n", msgfrom);
+                }
             }
         }
+        sleep(5);
     }
-    sleep(5);
 }
