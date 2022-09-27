@@ -64,9 +64,14 @@ void use_res(int thread)
 void *thread_body(void *arg)
 {
     long thread = (long)arg;
+    printf("%d thread started\n", (int) thread);
+    // Enetrs critical section and uses resources
     lock_thread(thread);
+    printf("%d thread entered critical section\n", (int) thread);
     use_res(thread);
+    // leaves critical section
     unlock_thread(thread);
+    printf("%d thread leave critical section\n", (int) thread);
     return NULL;
 }
 
