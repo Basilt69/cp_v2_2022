@@ -67,6 +67,12 @@ build CMakeFiles/untitled.dir/bakery_algorithm.c.o: C_COMPILER__untitled_Debug /
   OBJECT_DIR = CMakeFiles/untitled.dir
   OBJECT_FILE_DIR = CMakeFiles/untitled.dir
 
+build CMakeFiles/untitled.dir/bakery_algorithm_server.c.o: C_COMPILER__untitled_Debug /home/basiltkachenko/CLionProjects/cp_v2_2022/bakery_algorithm_server.c || cmake_object_order_depends_target_untitled
+  DEP_FILE = CMakeFiles/untitled.dir/bakery_algorithm_server.c.o.d
+  FLAGS = -g -std=gnu99
+  OBJECT_DIR = CMakeFiles/untitled.dir
+  OBJECT_FILE_DIR = CMakeFiles/untitled.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target untitled
@@ -75,7 +81,7 @@ build CMakeFiles/untitled.dir/bakery_algorithm.c.o: C_COMPILER__untitled_Debug /
 #############################################
 # Link the executable untitled
 
-build untitled: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/client.c.o CMakeFiles/untitled.dir/server.c.o CMakeFiles/untitled.dir/bakery_algorithm.c.o
+build untitled: C_EXECUTABLE_LINKER__untitled_Debug CMakeFiles/untitled.dir/client.c.o CMakeFiles/untitled.dir/server.c.o CMakeFiles/untitled.dir/bakery_algorithm.c.o CMakeFiles/untitled.dir/bakery_algorithm_server.c.o
   FLAGS = -g
   OBJECT_DIR = CMakeFiles/untitled.dir
   POST_BUILD = :
